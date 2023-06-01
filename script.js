@@ -1,5 +1,5 @@
 import { process } from '/env.js'
-import { Configuration, OpenAIApi } from 'openai'
+import { Configuration, OpenAIApi } from '/openai'
 
 const setupTextArea = document.getElementById("setup-textarea")
 const setupInputContainer = document.getElementById("setup-input-container")
