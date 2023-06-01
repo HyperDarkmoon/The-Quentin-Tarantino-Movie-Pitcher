@@ -1,9 +1,15 @@
+import { process } from '/env.js'
+import { Configuration, OpenAIApi } from 'openai'
+
 const setupTextArea = document.getElementById("setup-textarea")
 const setupInputContainer = document.getElementById("setup-input-container")
 const movieBossText = document.getElementById("movie-boss-text")
 
-const apiKey = "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"
-const url ="https://api.openai.com/v1/completions"
+const configuration = new Configuration({
+    apiKey : process.env.OPENAI_API_KEY
+})
+
+const openai = new OpenAIApi(configuration)
 
 document.getElementById("send-btn").addEventListener("click", () => {
     if (setupTextArea.value) {
@@ -13,7 +19,17 @@ document.getElementById("send-btn").addEventListener("click", () => {
     fetchBotReply()
 });
 
-function fetchBotReply() {
+/**Using OpenAI Dependency */
+async function fetchBotReply() {
+    const response = await openai.createCompletion({
+        prompt: "Pretend to be Quentin Tarantino",
+        model: "text-davinci-003"
+    })
+    movieBossText.innerText = response.data.choices[0].text
+}
+
+/**Using a fetch request */
+function fetchBotReplyWithFetchRequest() {
     fetch(url, {
         method: "POST",
         headers: {
@@ -21,8 +37,9 @@ function fetchBotReply() {
             'Authorization': 'Bearer ' + apiKey
         },
         body: JSON.stringify({
-            prompt: "This is a test, reply if you get it",
+            prompt: "Pretend to be Quentin Tarantino",
             model: "text-davinci-003",
         })
-    }).then(response => response.json()).then(data => console.log(data))
+    }).then(response => response.json()).then(data => 
+        movieBossText.innerText = data.choices[0].text)
 }
